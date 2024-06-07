@@ -1,3 +1,5 @@
+import moment from "https://esm.sh/moment/moment";
+
 alert('¡Bienvenido al restaurante más sabroso de la costa!');
 
 const mainMenu = {
@@ -57,8 +59,8 @@ const comentariosComida = [
 ]
 
 const comentarioAleatorio = comentarios => {
-  indexAleatorio = Math.floor(Math.random() * comentarios.length);
-  comentario = comentarios[indexAleatorio];
+  const indexAleatorio = Math.floor(Math.random() * comentarios.length);
+  const comentario = comentarios[indexAleatorio];
   return comentario;
 }
 
@@ -68,13 +70,26 @@ let inputComida = false;
 let eleccionUsuario;
 let preguntaQueComida;
 while (!inputComida) {
-  preguntaQueComida = prompt(`¿Usted prefiere ${Object.keys(mainMenu).join(', ')}?`);
+  const respuestaQueHora = prompt(`Introduce, por favor, la hora en el formato HH:mm`);
 
-  if (Object.keys(mainMenu).includes(preguntaQueComida.toUpperCase())) {
-    eleccionUsuario = mainMenu[preguntaQueComida.toUpperCase()]; 
+  const hora = moment(respuestaQueHora, "HH:mm");
+
+  if (hora.isSameOrAfter(moment("08:00", "HH:mm")) && hora.isSameOrBefore(moment("12:00", "HH:mm"))) {
+    preguntaQueComida = 'DESAYUNO';
+    eleccionUsuario = mainMenu[preguntaQueComida]; 
     inputComida = true; 
+  } else if (hora.isSameOrAfter(moment("12:01", "HH:mm")) && hora.isSameOrBefore(moment("16:00", "HH:mm"))) {
+    preguntaQueComida = 'ALMUERZO';
+    eleccionUsuario = mainMenu[preguntaQueComida]; 
+    inputComida = true; 
+  } else if (hora.isSameOrAfter(moment("16:01", "HH:mm")) && hora.isSameOrBefore(moment("20:00", "HH:mm"))) {
+    preguntaQueComida = 'CENA';
+    eleccionUsuario = mainMenu[preguntaQueComida]; 
+    inputComida = true; 
+  } else if (hora.isSameOrAfter(moment("20:01", "HH:mm")) || hora.isSameOrBefore(moment("07:59", "HH:mm"))) {
+    alert("El restaurante está cerrado en este momento, abrirá de nuevo a las 08:00."); 
   } else {
-    alert('¡Oops! Parece que hay un error en su elección. Por favor, inténtelo de nuevo.');
+    alert('¡Oops! Parece que hay un error en el formato de la hora introducida. Por favor, inténtelo de nuevo.');
   }
 }
 
